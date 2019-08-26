@@ -45,6 +45,15 @@ class FormPage extends Component {
         });
     }
 
+    deleteFormData = (id) => {
+        axios({
+            method: 'delete',
+            url: dev_environment.base_url + 'form/' + id + '.json',
+        }).then(() => {
+            this.getFormData();
+        });
+    }
+
     toggleModal = () => {
         this.setState(prevState => ({
             showModal: !prevState.showModal
@@ -57,7 +66,9 @@ class FormPage extends Component {
                 <h1>Form Page
                 <Button color="success" className="float-right" onClick={this.toggleModal}>Add form</Button>
                 </h1>
-                <FormList lists={this.state.lists} />
+                <FormList
+                    lists={this.state.lists}
+                    deleteFormData={this.deleteFormData} />
                 <AddEditForm
                     showModal={this.state.showModal}
                     toggleModal={this.toggleModal}

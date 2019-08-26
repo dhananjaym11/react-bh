@@ -10,7 +10,7 @@ export default function FormList(props) {
                     <Button>
                         Edit
                     </Button>
-                    <Button>
+                    <Button onClick={() => props.deleteFormData(list.id)}>
                         Delete
                     </Button>
                 </div>
