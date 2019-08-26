@@ -10,7 +10,8 @@ import AddEditForm from '../../components/Forms/AddEditForm';
 class FormPage extends Component {
     state = {
         lists: [],
-        showModal: false
+        showModal: false,
+        editListData: { 'id': 0, 'name': '', 'age': 0 }
     }
 
     componentDidMount() {
@@ -45,6 +46,42 @@ class FormPage extends Component {
         });
     }
 
+    putFormData = (data) => {
+        const formId = data.id;
+        delete data.id;
+        axios({
+            method: 'put',
+            url: dev_environment.base_url + 'form/' + formId + '.json',
+            data
+        }).then(() => {
+            this.getFormData();
+        });
+    }
+
+    addFormData = () => {
+        const editListData = {
+            name: '',
+            age: 0
+        }
+        this.setState({
+            editListData,
+            showModal: true
+        })
+    }
+
+    editFormData = (listId) => {
+        const editList = this.state.lists.find((list) => list.id === listId);
+        const editListData = {
+            id: editList.id,
+            name: editList.name,
+            age: editList.age
+        }
+        this.setState({
+            editListData,
+            showModal: true
+        })
+    }
+
     deleteFormData = (id) => {
         axios({
             method: 'delete',
@@ -64,15 +101,18 @@ class FormPage extends Component {
         return (
             <Container>
                 <h1>Form Page
-                <Button color="success" className="float-right" onClick={this.toggleModal}>Add form</Button>
+                <Button color="success" className="float-right" onClick={this.addFormData}>Add</Button>
                 </h1>
                 <FormList
                     lists={this.state.lists}
+                    editFormData={this.editFormData}
                     deleteFormData={this.deleteFormData} />
                 <AddEditForm
+                    data={this.state.editListData}
                     showModal={this.state.showModal}
                     toggleModal={this.toggleModal}
-                    postFormData={this.postFormData} />
+                    postFormData={this.postFormData}
+                    putFormData={this.putFormData} />
             </Container>
         )
     }

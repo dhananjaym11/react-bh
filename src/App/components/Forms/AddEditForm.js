@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Form, Label, Input, FormGroup, Modal } from 'reactstrap';
 
 export default function AddEditForm(props) {
-    const [name, updateName] = useState('');
-    const [age, updateAge] = useState(0);
+    const [name, updateName] = useState(props.data.name);
+    const [age, updateAge] = useState(props.data.age);
+
+    useEffect(() => {
+        updateName(props.data.name);
+        updateAge(props.data.age);
+    }, [props.data]);
 
     const onSaveClick = () => {
         const data = {
             name, age
         }
-        props.postFormData(data);
+        if (props.data.id) {
+            data.id = props.data.id;
+            props.putFormData(data);
+        } else {
+            props.postFormData(data);
+        }
+        updateName('');
+        updateAge(0);
         props.toggleModal();
     }
 
