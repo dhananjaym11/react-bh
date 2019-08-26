@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { Container } from 'reactstrap';
+import { Container, Button } from 'reactstrap';
 
+import './FormPage.css';
 import axios from 'axios';
 import { dev_environment } from '../../config/environment';
+import FormList from '../../components/Forms/FormList';
+import AddEditForm from '../../components/Forms/AddEditForm';
 
 class FormPage extends Component {
     state = {
-        lists: []
+        lists: [],
+        showModal: false
     }
 
     componentDidMount() {
@@ -31,32 +35,33 @@ class FormPage extends Component {
         });
     }
 
-    postFormData = () => {
+    postFormData = (data) => {
         axios({
             method: 'post',
             url: dev_environment.base_url + 'form.json',
-            data: {
-                'name': 'a',
-                'age': 10
-            }
-        })
+            data
+        }).then(() => {
+            this.getFormData();
+        });
+    }
+
+    toggleModal = () => {
+        this.setState(prevState => ({
+            showModal: !prevState.showModal
+        }))
     }
 
     render() {
-        let listsHtml = '';
-        if (this.state.lists.length) {
-            listsHtml = this.state.lists.map((list) => (
-                <div key={list.id}>
-                    <span>Name: {list.name} </span>
-                    &&
-                    <span> Age: {list.age}</span>
-                </div>
-            ));
-        }
         return (
             <Container>
-                <h1>Form Page</h1>
-                {listsHtml}
+                <h1>Form Page
+                <Button color="success" className="float-right" onClick={this.toggleModal}>Add form</Button>
+                </h1>
+                <FormList lists={this.state.lists} />
+                <AddEditForm
+                    showModal={this.state.showModal}
+                    toggleModal={this.toggleModal}
+                    postFormData={this.postFormData} />
             </Container>
         )
     }
