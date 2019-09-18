@@ -24,7 +24,7 @@ class FormPage extends Component {
             url: dev_environment.base_url + 'form.json?orderBy="Name"'
         }).then(response => {
             const lists = [];
-            for (let key in response.data) {
+            for (const key in response.data) {
                 lists.push({
                     id: key,
                     ...response.data[key]
